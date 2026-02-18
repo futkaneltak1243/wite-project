@@ -2,10 +2,10 @@
 
 ## Purpose
 
-This protocol defines how we author and maintain **Brain** docs for the GhostBuilder project under `/brain/**`.
+This protocol defines how we author and maintain **Brain** docs for this project under `/brain/**`.
 
 Brain docs are **low-level technical implementation explanations** authored primarily for **AI consumption** so future AIs can:
-- generate/modify Kotlin/Android code with minimal guesswork
+- generate/modify code with minimal guesswork
 - keep code aligned with the approved product intent (Seeds + Walkthrough)
 - prevent drift by making ownership boundaries explicit (what is canonical where)
 
@@ -16,23 +16,23 @@ This protocol is about **how to write Brain docs**. Product behavior remains def
 
 ---
 
-## Brain → Code (Core Concept: Read This First)
+## Brain -> Code (Core Concept: Read This First)
 
 ### Mental model
 - **Walkthrough** = *What the product must do* (user journeys + canonical system mechanics; no runnable code).
 - **Brain** = *How we will implement it* (architecture, modules, data models, state machines, IO boundaries, error strategy).
-- **Code** = *The concrete Kotlin/Android artifacts* (classes, functions, resources, manifests, Gradle).
+- **Code** = *The concrete implementation artifacts* (source files, configs, resources, build files).
 
 Brain exists to bridge the two failure modes that cause drift:
-1) Implementing from walkthrough alone → ambiguous design choices leak into code.
-2) Implementing from code alone → behavior deviates from the walkthrough intent over time.
+1) Implementing from walkthrough alone -> ambiguous design choices leak into code.
+2) Implementing from code alone -> behavior deviates from the walkthrough intent over time.
 
 ### How Brain drives code generation (expected workflow)
 1) **Create/Update Brain docs first**, until each brain file contains enough detail to implement its owned behaviors without rereading the entire walkthrough.
-2) **Generate code by “code ownership”**:
-   - each Brain file MUST declare which packages/classes it owns (see template)
+2) **Generate code by "code ownership"**:
+   - each Brain file MUST declare which modules/files it owns (see template)
    - code changes MUST be mapped back to a Brain section (or the Brain updated)
-3) **Implement in dependency order** (data/state → services → UI), keeping diffs small and reviewable.
+3) **Implement in dependency order** (data/state -> services -> UI), keeping diffs small and reviewable.
 4) **Run checks and keep traceability**:
    - when code changes imply behavior changes, update walkthrough first (or mark as TBD), then brain, then code.
 
@@ -43,9 +43,9 @@ Brain docs MUST NOT introduce new product behavior that contradicts Seeds/Walkth
 
 ---
 
-## Precedence and “Source of Truth” Rules
+## Precedence and "Source of Truth" Rules
 
-### Product behavior precedence (highest → lowest)
+### Product behavior precedence (highest -> lowest)
 1) `seed/PROJECT_DEFINITION.md`
 2) `walkthrough/02.*` System docs
 3) `walkthrough/01.*` Journey docs
@@ -57,8 +57,8 @@ If a conflict is found:
 - update the lower-precedence layer to match, or mark a clear TBD if unresolved
 
 ### Brain canonicalization rule (within brain)
-Brain docs are allowed to be canonical for **implementation decisions** that are not specified by the walkthrough (e.g., package layout, DI strategy), but MUST:
-- label them as “Implementation decision”
+Brain docs are allowed to be canonical for **implementation decisions** that are not specified by the walkthrough (e.g., module layout, dependency injection strategy), but MUST:
+- label them as "Implementation decision"
 - explain why the decision is compatible with walkthrough intent
 - be centralized (one canonical home) to avoid duplication
 
@@ -67,12 +67,12 @@ Brain docs are allowed to be canonical for **implementation decisions** that are
 ## What Belongs in Brain (Scope Boundaries)
 
 Brain files SHOULD contain:
-- architecture choices (modules/packages, layering, ownership)
-- domain/entities and state (Kotlin data models + serialization rules)
-- state machines and flow steps (preconditions → actions → side effects)
-- IO boundaries (GitHub/network, filesystem workspace, Room DB, secure storage)
-- concurrency model (coroutines, flows, dispatchers, cancellation)
-- error taxonomy + user messaging rules (dominant reason + primary action, etc.)
+- architecture choices (modules, layering, ownership)
+- domain entities and state (data models + serialization rules)
+- state machines and flow steps (preconditions -> actions -> side effects)
+- IO boundaries (APIs, filesystem, database, secure storage)
+- concurrency model (threading, async patterns, cancellation)
+- error taxonomy + user messaging rules
 - privacy/security constraints that affect implementation
 - test plan and invariants (what must never regress)
 
@@ -94,25 +94,25 @@ Use the walkthrough-compatible pattern:
 - `DD(.DD)*_UPPER_SNAKE_CASE.md`
 
 Reserved:
-- `/brain/00_TRANSLATOR_PLAN.md` — the mapping and build-order plan (meta; not a feature brain file).
+- `/brain/00_TRANSLATOR_PLAN.md` -- the mapping and build-order plan (meta; not a feature brain file).
 
 Numbering strategy (pick one; be consistent):
-1) **Sequential by authoring build order (recommended for GhostBuilder v1 Brain)**  
-   - `01_*`, `02_*`, `03_*`, … in the order listed in `/brain/00_TRANSLATOR_PLAN.md`
-2) **Category ranges (optional; useful when the Brain grows large)**  
-   - `01.*` Foundation / architecture / glossary  
-   - `10.*` Domain + state (project state, file lifecycle, checks)  
-   - `20.*` Services/runtime (session, voice, commands)  
-   - `30.*` Integrations (GitHub OAuth/API, AI backend + JSON contracts)  
-   - `40.*` UI/navigation/screens  
-   - `50.*` Consistency systems (check engine, fix/update plans)
+1) **Sequential by authoring build order (recommended)**
+   - `01_*`, `02_*`, `03_*`, ... in the order listed in `/brain/00_TRANSLATOR_PLAN.md`
+2) **Category ranges (optional; useful when the Brain grows large)**
+   - `01.*` Foundation / architecture / glossary
+   - `10.*` Domain + state
+   - `20.*` Services/runtime
+   - `30.*` Integrations (APIs, external services)
+   - `40.*` UI/navigation/screens
+   - `50.*` Consistency systems (checks, validations)
 
 ### Cross-linking and traceability (mandatory)
 Every Brain file MUST include a **Sources** section that links to the walkthrough docs it was derived from.
-- Use relative links (e.g., `../walkthrough/02.21_PIPELINE_STAGE_MANAGER_AND_STAGE_COMPLETION.md`)
+- Use relative links (e.g., `../walkthrough/02.01_SYSTEM_OVERVIEW.md`)
 - Prefer listing the most canonical System docs first (02.*), then Journey docs (01.*)
 
-Every Brain file MUST include **Related Brain Docs** links for direct dependencies (3–10; avoid giant maps).
+Every Brain file MUST include **Related Brain Docs** links for direct dependencies (3-10; avoid giant maps).
 
 ---
 
@@ -121,7 +121,7 @@ Every Brain file MUST include **Related Brain Docs** links for direct dependenci
 Brain files MUST use this top-level structure (H2 headings). Additional detail goes under H3/H4.
 
 ```md
-# <NN.NN — Title>
+# <NN.NN -- Title>
 
 ## Purpose
 
@@ -137,32 +137,32 @@ Brain files MUST use this top-level structure (H2 headings). Additional detail g
 - <terms; link to `walkthrough/02.01_SYSTEM_OVERVIEW.md` for shared glossary>
 
 ## Data Model & State
-- Entities (Kotlin data classes; JSON/DB shapes)
+- Entities (data structures, serialization shapes)
 - State machines (if any)
 
 ## Flows (Step-by-Step)
-- Preconditions → triggers → steps → side effects → persisted state updates
+- Preconditions -> triggers -> steps -> side effects -> persisted state updates
 
 ## Error Handling & Recovery
 - Error taxonomy, user messaging, retry/rollback semantics
 
 ## Concurrency & Performance
-- Coroutines/Flow usage, dispatchers, cancellation, backpressure
+- Threading/async patterns, cancellation, backpressure
 
 ## Storage & IO Boundaries
-- Room / DataStore / filesystem workspace / secure storage / network clients
+- Database, filesystem, secure storage, network clients
 
 ## Security & Privacy
 - Sensitive data handling, logging redaction, on-device-only constraints
 
-## Code Map (Android/Kotlin)
-- Packages
+## Code Map
+- Modules/packages
 - Key classes/interfaces
 - Public APIs and ownership boundaries
 - Suggested file paths
 
 ## Test Plan
-- Unit tests, integration tests, and “golden” invariants
+- Unit tests, integration tests, and "golden" invariants
 
 ## Open Questions / TBD
 
@@ -172,28 +172,27 @@ Brain files MUST use this top-level structure (H2 headings). Additional detail g
 
 Notes:
 - The **Code Map** section is mandatory; brain without code ownership causes drift.
-- “Owned Decisions” must be explicit: either this file is canonical, or it links to the canonical home.
+- "Owned Decisions" must be explicit: either this file is canonical, or it links to the canonical home.
 
 ---
 
-## Kotlin/Android Specificity Rules (How Detailed Brain Must Be)
+## Technology Specificity Rules (How Detailed Brain Must Be)
 
-“Low-level technical” means Brain should specify **implementable** details such as:
-- Compose screen responsibilities + navigation inputs/outputs
-- ViewModel state shape (UI state, events, effects)
-- repository interfaces + data sources (Room, filesystem, network)
-- JSON serialization strategy for `project_state.json` and AI contracts
-- foreground service lifecycle hooks, notification actions, and permission gates
-- error models (sealed classes) and user-facing messaging rules
+"Low-level technical" means Brain should specify **implementable** details. The level of detail depends on the tech stack defined in `seed/PROJECT_DEFINITION.md`.
 
-When you mention an Android concept, specify its likely artifact:
-- “foreground service” → `Service`, notification channel, actions, lifecycle and stop semantics
-- “OAuth token storage” → `EncryptedSharedPreferences` or Jetpack `Security` + explicit threat model
-- “Room catalog” → `@Entity`, DAO APIs, migrations, and read performance expectations
+For any technology, Brain docs should specify:
+- Component responsibilities and navigation/routing
+- State management approach (UI state, events, side effects)
+- Data access patterns (APIs, filesystem, database)
+- Serialization strategy for data contracts
+- Service lifecycle and background processing (if applicable)
+- Error models and user-facing messaging rules
+
+When you mention a technology concept, specify its likely artifact in the project's chosen stack.
 
 ---
 
-## Translation Discipline (Walkthrough → Brain)
+## Translation Discipline (Walkthrough -> Brain)
 
 ### Canonical-source discipline
 - System docs (02.*) are canonical for mechanics/contracts/terms.
@@ -202,14 +201,14 @@ When you mention an Android concept, specify its likely artifact:
 
 ### Ambiguity handling (mandatory)
 If the walkthrough is missing an implementation-critical detail:
-- Add a **single** “Assumption” bullet under the relevant Brain section and record it in Change Log, OR
+- Add a **single** "Assumption" bullet under the relevant Brain section and record it in Change Log, OR
 - Add a single question under **Open Questions / TBD** with:
   - the exact missing decision
   - the smallest set of options
   - a recommended default (if safe)
 
 ### No-duplication rule
-If a concept is shared (e.g., `ProjectState`, “Paused”, “Proceed/Approve”), it must have:
+If a concept is shared across multiple brain files, it must have:
 - one canonical Brain home, and
 - all other Brain files summarize + link back
 
@@ -219,11 +218,11 @@ If a concept is shared (e.g., `ProjectState`, “Paused”, “Proceed/Approve�
 
 A Brain file is acceptable when:
 - Sources are linked and correct
-- Owned Decisions are explicit (no hidden “source of truth”)
+- Owned Decisions are explicit (no hidden "source of truth")
 - Data model/state is concrete enough to implement
 - Flows include preconditions and persisted state updates
 - Error handling defines user messaging and recovery
-- Code Map names the owning packages/classes
+- Code Map names the owning modules/files
 - Open questions are explicit (no implied behavior)
 
 ---
