@@ -1,0 +1,10 @@
+# GhostBuilder local-only artifacts (never push)
+/transcripts/
+/logs/
+*.draft
+.tmp/
+.cache/
+*.swp
+*~
+.DS_Store
+Thumbs.db
